@@ -83,19 +83,17 @@ public class JavaConfig implements WebMvcConfigurer {
     public LocalContainerEntityManagerFactoryBean getEntityManagerFactory() {
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
         factoryBean.setDataSource(getDataSource());
-        factoryBean.setPackagesToScan("app.model");
+        factoryBean.setPackagesToScan("web.model");
         factoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         Properties jpaProperties = new Properties();
-        jpaProperties.put("hibrnate.show_sql", env.getProperty("hibernate.show_sql"));
+        jpaProperties.put("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
         jpaProperties.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
         factoryBean.setJpaProperties(jpaProperties);
         return factoryBean;
     }
 
     @Bean
-    public PlatformTransactionManager getTransactionManager(EntityManagerFactory emf) {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(emf);
-        return transactionManager;
+    public PlatformTransactionManager getTransactionManager(EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
     }
 }
