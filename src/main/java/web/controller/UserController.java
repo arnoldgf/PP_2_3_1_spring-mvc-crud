@@ -1,5 +1,7 @@
 package web.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,11 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 	private final UserService userService;
+	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+	public void someMethod() {
+		logger.info("This is a log message!");
+	}
 
 	@Autowired
     public UserController(UserService userService) {
@@ -21,6 +28,9 @@ public class UserController {
 
 	@GetMapping
 	public String Users(ModelMap model) {
+		logger.info("Fetching list of users"); //logger
+		logger.debug("Some debug message");
+
 		List<User> users = userService.getUsers();
 		model.addAttribute("users", users);
 		return "users";
@@ -33,6 +43,9 @@ public class UserController {
 	
 	@PostMapping("/new")
 	public String create(@ModelAttribute("user") User user) {
+		logger.info("Creating a new user: {}", user); //logger
+		logger.debug("Some debug message");
+
 		userService.saveUser(user);
 		return "redirect:/users";
 	}
